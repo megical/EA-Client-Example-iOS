@@ -7,8 +7,10 @@
 
 import UIKit
 import MegicalEasyAccess_SDK_iOS
+import SwiftyBeaver
 
 class ViewController: UIViewController {
+    let log = SwiftyBeaver.self
     
     private let bRegister = UIButton(type: .roundedRect)
     private let bAuth = UIButton(type: .roundedRect)
@@ -16,8 +18,6 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        EALog.config() // default logging conf, you can do this yourself also
         
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(self.onEasyaccessSuccessWithLoginCode(notification:)),
@@ -35,9 +35,7 @@ class ViewController: UIViewController {
         self.bRegister.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -40.0).isActive = true
         self.bRegister.leftAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leftAnchor, constant: 40.0).isActive = true
         self.bRegister.addAction(UIAction(handler: { (action: UIAction) in
-            // get this from the service we are authenticating against
-            let clientToken = "91b06ab0-9c8d-4483-b716-5b130c3eb212"
-            self.registerClient(clientToken)
+            self.getClientTokenAndRegisterClient()
         }), for: .touchUpInside)
         
         self.bAuth.setTitle("Authenticate", for: .normal)
@@ -49,7 +47,38 @@ class ViewController: UIViewController {
             self.authenticate()
         }), for: .touchUpInside)
     }
+    
+    /**
+     Get clientToken from the service we are authenticating against.
+     In the example we are getting clientToken with appToken we get
+     by logging in to playground with easy access.
 
+     Login to https://playground.megical.com/easyaccess/ to get
+     one time example app token (valid 3 days) that looks like this:
+     d9e734f7-353d-490d-9f78-42ce3c0f19ff
+     */
+    private func getClientTokenAndRegisterClient() {
+        let appToken = "a1181b06-0964-479a-85ba-6faa363f4557"
+        PlaygroundAPI.playgroundClientToken(appToken: appToken) { [weak self] (clientToken: String?, error: Error?) in
+            guard let self = self else {
+                return
+            }
+            
+            guard error == nil else {
+                self.log.warning(error!)
+                return
+            }
+            
+            guard let clientToken = clientToken else {
+                self.log.warning("No clientToken")
+                return
+            }
+            
+            self.log.info("Got clientToken")
+            self.registerClient(clientToken)
+        }
+    }
+    
     private func registerClient(_ clientToken: String) {
         let clientKey = MegAuthJwkKey(keychainTagPrivate: CLIENT_KEY_TAG_PRIVATE,
                                       keychainTagPublic: CLIENT_KEY_TAG_PUBLIC,
@@ -70,7 +99,7 @@ class ViewController: UIViewController {
                                                keychainKeyClientId: KEYCHAIN_CLIENT_ID) { (clientId: String?, error: Error?) in
             
             guard error == nil else {
-                print(error!)
+                self.log.warning(error!)
                 return
             }
             
@@ -78,7 +107,7 @@ class ViewController: UIViewController {
                 return
             }
             
-            print("Client registered with id: \(clientId)")
+            self.log.info("Client registered with id: \(clientId)")
         }
     }
     
@@ -178,7 +207,20 @@ class ViewController: UIViewController {
                     return
                 }
                 
-                print("id token validated and got access code: \(accessTokenResult.accessToken)")
+                self.log.info("id token validated and got access code: \(accessTokenResult.accessToken)")
+                
+                PlaygroundAPI.playgroundHello(accessToken: accessTokenResult.accessToken) { [weak self] (error: Error?) in
+                    guard let self = self else {
+                        return
+                    }
+                    
+                    guard error == nil else {
+                        self.log.warning(error!)
+                        return
+                    }
+                    
+                    self.log.info("playgroundHello ok")
+                }
                 
             }
         }

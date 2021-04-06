@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftyBeaver
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -17,6 +18,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let _ = (scene as? UIWindowScene) else { return }
+        
+        // Determine who sent the URL.
+        // Called if app is not in memory
+        if let urlContext = connectionOptions.urlContexts.first {
+            SwiftyBeaver.debug("scene willConnectTo session")
+            let sendingAppID = urlContext.options.sourceApplication
+            let url = urlContext.url
+            SwiftyBeaver.info("source application = \(sendingAppID ?? "Unknown")")
+            SwiftyBeaver.debug("url = \(url)")
+            
+            _ = self.handleEaCallback(url: url)
+        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -47,6 +60,41 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        // Determine who sent the URL.
+        if let urlContext = URLContexts.first {
+            SwiftyBeaver.debug("scene opening url")
+            let sendingAppID = urlContext.options.sourceApplication
+            let url = urlContext.url
+            SwiftyBeaver.info("source application = \(sendingAppID ?? "Unknown")")
+            SwiftyBeaver.debug("url = \(url)")
+                
+            _ = self.handleEaCallback(url: url)
+        }
+    }
+    
+    func handleEaCallback(url: URL) -> Bool {
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
+            return false
+        }
+        
+        guard components.path.contains(eaCallbackPath) else {
+            return false
+        }
+        
+        SwiftyBeaver.info("\(eaCallbackPath) path called")
+        
+        if let loginCode = components.queryItems?.first(where: { $0.name == "loginCode" })?.value {
+            if loginCode.count > 0 {
+                SwiftyBeaver.debug("collected loginCode: \(loginCode) from url")
+                NotificationCenter.default.post(name: .init(rawValue: NOTIFICATION_NAME_EASY_ACCESS_SUCCESS),
+                                                object: loginCode)
+                return true
+            }
+        }
+        
+        return false
+    }
 
 }
 

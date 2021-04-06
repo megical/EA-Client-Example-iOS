@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import MegicalEasyAccess_SDK_iOS
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -14,6 +15,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        EALog.config() // default logging conf, you can do this yourself also
         
         let eaOauthRedirectRegistered = URLProtocol.registerClass(ExampleEARedirectURLProtocol.self)
         print("eaOauthRedirectRegistered: \(eaOauthRedirectRegistered)")

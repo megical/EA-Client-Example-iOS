@@ -18,6 +18,7 @@
 		E4C04ADC260C87B600193CE7 /* MegicalEasyAccess-SDK-iOS in Frameworks */ = {isa = PBXBuildFile; productRef = E4C04ADB260C87B600193CE7 /* MegicalEasyAccess-SDK-iOS */; };
 		E4C04AE8260C973C00193CE7 /* ExampleEARedirectURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C04AE7260C973C00193CE7 /* ExampleEARedirectURLProtocol.swift */; };
 		E4C04AED260C978E00193CE7 /* AuthConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C04AEC260C978E00193CE7 /* AuthConfig.swift */; };
+		E4C3AA452614659000C1823E /* PlaygroundAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C3AA442614659000C1823E /* PlaygroundAPI.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +55,7 @@
 		E4C04AC8260C84AC00193CE7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E4C04AE7260C973C00193CE7 /* ExampleEARedirectURLProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleEARedirectURLProtocol.swift; sourceTree = "<group>"; };
 		E4C04AEC260C978E00193CE7 /* AuthConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfig.swift; sourceTree = "<group>"; };
+		E4C3AA442614659000C1823E /* PlaygroundAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundAPI.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +107,7 @@
 		E4C04AA3260C84A900193CE7 /* EA Client Example */ = {
 			isa = PBXGroup;
 			children = (
+				E4C3AA432614657400C1823E /* Playground */,
 				E4C04AA4260C84A900193CE7 /* AppDelegate.swift */,
 				E4C04AA6260C84A900193CE7 /* SceneDelegate.swift */,
 				E4C04AA8260C84A900193CE7 /* ViewController.swift */,
@@ -134,6 +137,14 @@
 				E4C04AC8260C84AC00193CE7 /* Info.plist */,
 			);
 			path = "EA Client ExampleUITests";
+			sourceTree = "<group>";
+		};
+		E4C3AA432614657400C1823E /* Playground */ = {
+			isa = PBXGroup;
+			children = (
+				E4C3AA442614659000C1823E /* PlaygroundAPI.swift */,
+			);
+			path = Playground;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -277,6 +288,7 @@
 				E4C04AA5260C84A900193CE7 /* AppDelegate.swift in Sources */,
 				E4C04AE8260C973C00193CE7 /* ExampleEARedirectURLProtocol.swift in Sources */,
 				E4C04AA7260C84A900193CE7 /* SceneDelegate.swift in Sources */,
+				E4C3AA452614659000C1823E /* PlaygroundAPI.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -22,10 +22,10 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>com.megical.example</string>
+			<string>com.megical.ea.example</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.megical.megical</string>
+				<string>com.megical.ea.example</string>
 			</array>
 		</dict>
 	</array>
