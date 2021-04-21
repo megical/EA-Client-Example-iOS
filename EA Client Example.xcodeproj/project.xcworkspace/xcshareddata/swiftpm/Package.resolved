@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/airsidemobile/JOSESwift",
         "state": {
           "branch": null,
-          "revision": "6e301dd8652aa7b3bbe4c228153cfea9843ed69e",
-          "version": "2.3.1"
+          "revision": "10ed3b6736def7c26eb87135466b1cb46ea7e37f",
+          "version": "2.4.0"
         }
       },
       {
@@ -33,7 +33,7 @@
         "repositoryURL": "https://bitbucket.org/megicaldev/megicaleasyaccess-sdk-ios",
         "state": {
           "branch": "main",
-          "revision": "5cfe22fff5ae5443426d31518999bc17c87e38f5",
+          "revision": "bc0c292d7d7fec7d14a52f889c11d548a5808625",
           "version": null
         }
       },

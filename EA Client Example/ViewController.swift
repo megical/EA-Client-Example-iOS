@@ -58,7 +58,7 @@ class ViewController: UIViewController {
      d9e734f7-353d-490d-9f78-42ce3c0f19ff
      */
     private func getClientTokenAndRegisterClient() {
-        let appToken = "a1181b06-0964-479a-85ba-6faa363f4557"
+        let appToken = "e7f0f95d-74d4-4448-ad38-03a50c2c90b6"
         PlaygroundAPI.playgroundClientToken(appToken: appToken) { [weak self] (clientToken: String?, error: Error?) in
             guard let self = self else {
                 return
@@ -118,6 +118,7 @@ class ViewController: UIViewController {
         authFlow.authorize(authServerAddress: AUTH_SERVER_ADDRESS,
                            authCallbackEA: AUTH_CALLBACK_EA,
                            authCallbackOauth: AUTH_CALLBACK_OAUTH,
+                           audience: AUDIENCE,
                            keychainKeyClientId: KEYCHAIN_CLIENT_ID,
                            alwaysShowQRViewOnController: nil) { (error: Error?) in
             
