@@ -58,8 +58,8 @@ class ViewController: UIViewController {
      d9e734f7-353d-490d-9f78-42ce3c0f19ff
      */
     private func getClientTokenAndRegisterClient() {
-        let appToken = "e7f0f95d-74d4-4448-ad38-03a50c2c90b6"
-        PlaygroundAPI.playgroundClientToken(appToken: appToken) { [weak self] (clientToken: String?, error: Error?) in
+        let appToken = "9911a2c4-cd31-498f-bfb7-c935629ce428"
+        PlaygroundAPI.playgroundClientToken(appToken: appToken) { [weak self] (playgroundRetval: PlaygroundClientTokenReturnValue?, error: Error?) in
             guard let self = self else {
                 return
             }
@@ -69,17 +69,21 @@ class ViewController: UIViewController {
                 return
             }
             
-            guard let clientToken = clientToken else {
-                self.log.warning("No clientToken")
+            guard let playgroundRetval = playgroundRetval else {
+                self.log.warning("No retval from playground")
                 return
             }
             
+            UserDefaults.standard.setValue(playgroundRetval.audience, forKey: "eaAudience")
+            UserDefaults.standard.setValue(playgroundRetval.authEnvUrl, forKey: "eaAuthEnvUrl")
+            UserDefaults.standard.setValue(playgroundRetval.authEnv, forKey: "eaAuthEnv")
+            
             self.log.info("Got clientToken")
-            self.registerClient(clientToken)
+            self.registerClient(clientToken: playgroundRetval.clientToken, authEnvUrl: playgroundRetval.authEnvUrl)
         }
     }
     
-    private func registerClient(_ clientToken: String) {
+    private func registerClient(clientToken: String, authEnvUrl: String) {
         let clientKey = MegAuthJwkKey(keychainTagPrivate: CLIENT_KEY_TAG_PRIVATE,
                                       keychainTagPublic: CLIENT_KEY_TAG_PUBLIC,
                                       jwkUseClause: "sig")
@@ -90,10 +94,8 @@ class ViewController: UIViewController {
             return
         }
         
-        MegAuthRegistrationFlow.registerClient(authServerAddress: AUTH_SERVER_ADDRESS,
+        MegAuthRegistrationFlow.registerClient(authServerAddress: authEnvUrl,
                                                clientToken: clientToken,
-                                               clientType: CLIENT_TYPE,
-                                               appId: APP_ID,
                                                authCallback: AUTH_CALLBACK_OAUTH,
                                                jwkPublicKeyData: jwkPKData,
                                                keychainKeyClientId: KEYCHAIN_CLIENT_ID) { (clientId: String?, error: Error?) in
@@ -115,10 +117,18 @@ class ViewController: UIViewController {
         let authFlow = MegAuthFlow()
         self.authFlow = authFlow
         
-        authFlow.authorize(authServerAddress: AUTH_SERVER_ADDRESS,
+        guard let authEnvUrl = UserDefaults.standard.string(forKey: "eaAuthEnvUrl"),
+              let authEnv = UserDefaults.standard.string(forKey: "eaAuthEnv"),
+              let audience = UserDefaults.standard.string(forKey: "eaAudience") else {
+            self.log.warning("Registration parameters not found")
+            return
+        }
+        
+        authFlow.authorize(authServerAddress: authEnvUrl,
+                           authEnv: authEnv,
                            authCallbackEA: AUTH_CALLBACK_EA,
                            authCallbackOauth: AUTH_CALLBACK_OAUTH,
-                           audience: AUDIENCE,
+                           audience: audience,
                            keychainKeyClientId: KEYCHAIN_CLIENT_ID,
                            alwaysShowQRViewOnController: nil) { (error: Error?) in
             
@@ -142,7 +152,13 @@ class ViewController: UIViewController {
             return
         }
         
-        guard let verifyURL = URL(string: AUTH_VERIFY_URL) else {
+        guard let authEnvUrl = UserDefaults.standard.string(forKey: "eaAuthEnvUrl") else {
+            self.log.warning("Registration parameters not found")
+            return
+        }
+        
+        guard let verifyURL = URL(string: "\(authEnvUrl)/api/v1/auth/verifyEasyaccess") else {
+            self.log.warning("Could not form verify URL")
             return
         }
         

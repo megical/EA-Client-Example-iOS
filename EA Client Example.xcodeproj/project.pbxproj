@@ -56,6 +56,7 @@
 		E4C04AE7260C973C00193CE7 /* ExampleEARedirectURLProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleEARedirectURLProtocol.swift; sourceTree = "<group>"; };
 		E4C04AEC260C978E00193CE7 /* AuthConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfig.swift; sourceTree = "<group>"; };
 		E4C3AA442614659000C1823E /* PlaygroundAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundAPI.swift; sourceTree = "<group>"; };
+		E4E6A80F264E51AD002B2BEB /* MegicalEasyAccess-SDK-iOS */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "MegicalEasyAccess-SDK-iOS"; path = "../MegicalEasyAccess-SDK-iOS"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,6 +88,7 @@
 		E4C04A98260C84A900193CE7 = {
 			isa = PBXGroup;
 			children = (
+				E4E6A80F264E51AD002B2BEB /* MegicalEasyAccess-SDK-iOS */,
 				E4C04AA3260C84A900193CE7 /* EA Client Example */,
 				E4C04ABA260C84AB00193CE7 /* EA Client ExampleTests */,
 				E4C04AC5260C84AC00193CE7 /* EA Client ExampleUITests */,

@@ -12,10 +12,31 @@ import MegicalEasyAccess_SDK_iOS
 /**
  https://playground.megical.com/test-service/docs/api
 */
+
+
+public struct PlaygroundClientTokenReturnValue {
+    var clientToken: String
+    var audience: String
+    var authEnvUrl: String
+    var authEnv: String
+    
+    public init(clientToken: String,
+                         audience: String,
+                         authEnvUrl: String,
+                         authEnv: String) {
+        self.clientToken = clientToken
+        self.audience = audience
+        self.authEnvUrl = authEnvUrl
+        self.authEnv = authEnv
+    }
+}
+
+
 public struct PlaygroundAPI {
     
     public static func playgroundClientToken(appToken: String,
-                                             completion: @escaping (_ clientToken: String?, _ error: Error?) -> Void) {
+                                             completion: @escaping (_ returnValue: PlaygroundClientTokenReturnValue?,
+                                                                    _ error: Error?) -> Void) {
         
         let bodyContent = "{ \"token\":\"\(appToken)\" }"
         guard let bodyData = bodyContent.data(using: .utf8) else {
@@ -80,7 +101,13 @@ public struct PlaygroundAPI {
             //        "https://megical_callback",
             //        "com.megical.ea.example:/oauth-callback"
             //    ],
+//                audience =     (
+//                   "https://playground.megical.com"
+//                );
+
             //    "url": "https://auth-dev.megical.com/api/v1/client"
+//                authEnvUrl: 'https://auth-dev.megical.com',
+//                authEnv: 'dev',
             //}
 
             guard let clientToken = jsonObj["clientToken"] as? String else {
@@ -88,7 +115,28 @@ public struct PlaygroundAPI {
                 return
             }
             
-            completion(clientToken, nil)
+            guard let audiences = jsonObj["audience"] as? [String] else {
+                completion(nil, EAErrorUtil.error(domain: "PlaygroundAPI", code: -1, underlyingError: nil, description: "No audience"))
+                return
+            }
+            let audienceString = audiences.joined(separator: " ")
+            
+            guard let authEnvUrl = jsonObj["authEnvUrl"] as? String else {
+                completion(nil, EAErrorUtil.error(domain: "PlaygroundAPI", code: -1, underlyingError: nil, description: "No authEnvUrl"))
+                return
+            }
+            
+            guard let authEnv = jsonObj["authEnv"] as? String else {
+                completion(nil, EAErrorUtil.error(domain: "PlaygroundAPI", code: -1, underlyingError: nil, description: "No authEnv"))
+                return
+            }
+            
+            let retval = PlaygroundClientTokenReturnValue(clientToken: clientToken,
+                                                          audience: audienceString,
+                                                          authEnvUrl: authEnvUrl,
+                                                          authEnv: authEnv)
+            
+            completion(retval, nil)
         }
         task.resume()
     }
