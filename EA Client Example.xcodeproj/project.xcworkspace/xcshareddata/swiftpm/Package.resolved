@@ -30,11 +30,11 @@
       },
       {
         "package": "MegicalEasyAccess-SDK-iOS",
-        "repositoryURL": "https://bitbucket.org/megicaldev/megicaleasyaccess-sdk-ios",
+        "repositoryURL": "https://github.com/megicalcompany/MegicalEasyAccess-SDK-iOS",
         "state": {
-          "branch": "main",
-          "revision": "bc0c292d7d7fec7d14a52f889c11d548a5808625",
-          "version": null
+          "branch": null,
+          "revision": "af6482a028a65d2fe10955fed2f3dbe29326655d",
+          "version": "1.0.1"
         }
       },
       {
@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/Quick/Nimble.git",
         "state": {
           "branch": null,
-          "revision": "e491a6731307bb23783bf664d003be9b2fa59ab5",
-          "version": "9.0.0"
+          "revision": "af1730dde4e6c0d45bf01b99f8a41713ce536790",
+          "version": "9.2.0"
         }
       },
       {
@@ -69,8 +69,8 @@
         "repositoryURL": "https://github.com/SwiftyBeaver/SwiftyBeaver.git",
         "state": {
           "branch": null,
-          "revision": "2c513a2e8fbfbd6495afc4a05941d8e3fdba68e9",
-          "version": "1.9.3"
+          "revision": "5cfd6888447adcc49b80b625281b6177104f011f",
+          "version": "1.9.4"
         }
       }
     ]

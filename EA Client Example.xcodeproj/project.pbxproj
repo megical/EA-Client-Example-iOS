@@ -15,10 +15,10 @@
 		E4C04AB1260C84AB00193CE7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E4C04AAF260C84AB00193CE7 /* LaunchScreen.storyboard */; };
 		E4C04ABC260C84AB00193CE7 /* EA_Client_ExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C04ABB260C84AB00193CE7 /* EA_Client_ExampleTests.swift */; };
 		E4C04AC7260C84AC00193CE7 /* EA_Client_ExampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C04AC6260C84AC00193CE7 /* EA_Client_ExampleUITests.swift */; };
-		E4C04ADC260C87B600193CE7 /* MegicalEasyAccess-SDK-iOS in Frameworks */ = {isa = PBXBuildFile; productRef = E4C04ADB260C87B600193CE7 /* MegicalEasyAccess-SDK-iOS */; };
 		E4C04AE8260C973C00193CE7 /* ExampleEARedirectURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C04AE7260C973C00193CE7 /* ExampleEARedirectURLProtocol.swift */; };
 		E4C04AED260C978E00193CE7 /* AuthConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C04AEC260C978E00193CE7 /* AuthConfig.swift */; };
 		E4C3AA452614659000C1823E /* PlaygroundAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C3AA442614659000C1823E /* PlaygroundAPI.swift */; };
+		E4E6A8522652649A002B2BEB /* MegicalEasyAccess-SDK-iOS in Frameworks */ = {isa = PBXBuildFile; productRef = E4E6A8512652649A002B2BEB /* MegicalEasyAccess-SDK-iOS */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,7 +56,6 @@
 		E4C04AE7260C973C00193CE7 /* ExampleEARedirectURLProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleEARedirectURLProtocol.swift; sourceTree = "<group>"; };
 		E4C04AEC260C978E00193CE7 /* AuthConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfig.swift; sourceTree = "<group>"; };
 		E4C3AA442614659000C1823E /* PlaygroundAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundAPI.swift; sourceTree = "<group>"; };
-		E4E6A80F264E51AD002B2BEB /* MegicalEasyAccess-SDK-iOS */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "MegicalEasyAccess-SDK-iOS"; path = "../MegicalEasyAccess-SDK-iOS"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,7 +63,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E4C04ADC260C87B600193CE7 /* MegicalEasyAccess-SDK-iOS in Frameworks */,
+				E4E6A8522652649A002B2BEB /* MegicalEasyAccess-SDK-iOS in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -88,7 +87,6 @@
 		E4C04A98260C84A900193CE7 = {
 			isa = PBXGroup;
 			children = (
-				E4E6A80F264E51AD002B2BEB /* MegicalEasyAccess-SDK-iOS */,
 				E4C04AA3260C84A900193CE7 /* EA Client Example */,
 				E4C04ABA260C84AB00193CE7 /* EA Client ExampleTests */,
 				E4C04AC5260C84AC00193CE7 /* EA Client ExampleUITests */,
@@ -166,7 +164,7 @@
 			);
 			name = "EA Client Example";
 			packageProductDependencies = (
-				E4C04ADB260C87B600193CE7 /* MegicalEasyAccess-SDK-iOS */,
+				E4E6A8512652649A002B2BEB /* MegicalEasyAccess-SDK-iOS */,
 			);
 			productName = "EA Client Example";
 			productReference = E4C04AA1260C84A900193CE7 /* EA Client Example.app */;
@@ -240,7 +238,7 @@
 			);
 			mainGroup = E4C04A98260C84A900193CE7;
 			packageReferences = (
-				E4C04ADA260C87B600193CE7 /* XCRemoteSwiftPackageReference "megicaleasyaccess-sdk-ios" */,
+				E4E6A8502652649A002B2BEB /* XCRemoteSwiftPackageReference "MegicalEasyAccess-SDK-iOS" */,
 			);
 			productRefGroup = E4C04AA2260C84A900193CE7 /* Products */;
 			projectDirPath = "";
@@ -625,20 +623,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		E4C04ADA260C87B600193CE7 /* XCRemoteSwiftPackageReference "megicaleasyaccess-sdk-ios" */ = {
+		E4E6A8502652649A002B2BEB /* XCRemoteSwiftPackageReference "MegicalEasyAccess-SDK-iOS" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://bitbucket.org/megicaldev/megicaleasyaccess-sdk-ios";
+			repositoryURL = "https://github.com/megicalcompany/MegicalEasyAccess-SDK-iOS";
 			requirement = {
-				branch = main;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		E4C04ADB260C87B600193CE7 /* MegicalEasyAccess-SDK-iOS */ = {
+		E4E6A8512652649A002B2BEB /* MegicalEasyAccess-SDK-iOS */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = E4C04ADA260C87B600193CE7 /* XCRemoteSwiftPackageReference "megicaleasyaccess-sdk-ios" */;
+			package = E4E6A8502652649A002B2BEB /* XCRemoteSwiftPackageReference "MegicalEasyAccess-SDK-iOS" */;
 			productName = "MegicalEasyAccess-SDK-iOS";
 		};
 /* End XCSwiftPackageProductDependency section */
