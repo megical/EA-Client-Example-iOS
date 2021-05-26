@@ -28,7 +28,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             SwiftyBeaver.info("source application = \(sendingAppID ?? "Unknown")")
             SwiftyBeaver.debug("url = \(url)")
             
-            _ = self.handleEaCallback(url: url)
+            _ = self.handleURLSchemes(url: url)
         }
     }
 
@@ -69,20 +69,44 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             SwiftyBeaver.info("source application = \(sendingAppID ?? "Unknown")")
             SwiftyBeaver.debug("url = \(url)")
                 
-            _ = self.handleEaCallback(url: url)
+            _ = self.handleURLSchemes(url: url)
         }
     }
     
-    func handleEaCallback(url: URL) -> Bool {
+    func handleURLSchemes(url: URL) -> Bool {
+        if url.absoluteString.contains(AUTH_CALLBACK_REGISTER) {
+            return handleAuthRegisterCallback(url: url)
+        } else if url.absoluteString.contains(AUTH_CALLBACK_EA) {
+            return handleEaCallback(url: url)
+        }
+        return false
+    }
+    
+    func handleAuthRegisterCallback(url: URL) -> Bool {
+        SwiftyBeaver.info("Handling registration callback at:\(AUTH_CALLBACK_REGISTER) path called")
+        
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
             return false
         }
         
-        guard components.path.contains(eaCallbackPath) else {
-            return false
+        if let appToken = components.queryItems?.first(where: { $0.name == "clientToken" })?.value {
+            if appToken.count > 0 {
+                SwiftyBeaver.debug("collected appToken: \(appToken) from url")
+                NotificationCenter.default.post(name: .init(rawValue: NOTIFICATION_NAME_REGISTER_APP_TOKEN_RECEIVED),
+                                                object: appToken)
+                return true
+            }
         }
         
-        SwiftyBeaver.info("\(eaCallbackPath) path called")
+        return false
+    }
+    
+    func handleEaCallback(url: URL) -> Bool {
+        SwiftyBeaver.info("Handling Easy Access callback at:\(AUTH_CALLBACK_EA) path called")
+        
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
+            return false
+        }
         
         if let loginCode = components.queryItems?.first(where: { $0.name == "loginCode" })?.value {
             if loginCode.count > 0 {

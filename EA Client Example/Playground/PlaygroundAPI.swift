@@ -97,18 +97,26 @@ public struct PlaygroundAPI {
             //    "appId": "test-app",
             //    "clientToken": "4881ef3c-357f-4e47-a9be-cc707187a964",
             //    "redirectUrls": [
-            //        "megical:callback",
-            //        "https://megical_callback",
-            //        "com.megical.ea.example:/oauth-callback"
             //    ],
-//                audience =     (
-//                   "https://playground.megical.com"
-//                );
-
+            //    audience =     (
+            //       "https://playground.megical.com"
+            //    ),
             //    "url": "https://auth-dev.megical.com/api/v1/client"
-//                authEnvUrl: 'https://auth-dev.megical.com',
-//                authEnv: 'dev',
+            //    authEnvUrl: 'https://auth-dev.megical.com',
+            //    authEnv: 'dev',
             //}
+            
+            guard let redirectUrls = jsonObj["redirectUrls"] as? [String] else {
+                completion(nil, EAErrorUtil.error(domain: "PlaygroundAPI", code: -1, underlyingError: nil, description: "No redirect urls returned"))
+                return
+            }
+            
+            guard redirectUrls.filter({ (redirect: String) in
+                return redirect == AUTH_CALLBACK_OAUTH
+            }).count == 1 else {
+                completion(nil, EAErrorUtil.error(domain: "PlaygroundAPI", code: -1, underlyingError: nil, description: "Server didn't return the redirect defined in the app"))
+                return
+            }
 
             guard let clientToken = jsonObj["clientToken"] as? String else {
                 completion(nil, EAErrorUtil.error(domain: "PlaygroundAPI", code: -1, underlyingError: nil, description: "No clientToken"))

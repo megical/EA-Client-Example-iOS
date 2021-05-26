@@ -20,6 +20,11 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         NotificationCenter.default.addObserver(self,
+                                               selector: #selector(self.onExampleRegisterAppTokenReceived(notification:)),
+                                               name: .init(rawValue: NOTIFICATION_NAME_REGISTER_APP_TOKEN_RECEIVED),
+                                               object: nil)
+        
+        NotificationCenter.default.addObserver(self,
                                                selector: #selector(self.onEasyaccessSuccessWithLoginCode(notification:)),
                                                name: .init(rawValue: NOTIFICATION_NAME_EASY_ACCESS_SUCCESS),
                                                object: nil)
@@ -35,7 +40,17 @@ class ViewController: UIViewController {
         self.bRegister.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -40.0).isActive = true
         self.bRegister.leftAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leftAnchor, constant: 40.0).isActive = true
         self.bRegister.addAction(UIAction(handler: { (action: UIAction) in
-            self.getClientTokenAndRegisterClient()
+            // Client registration needs app token from the app we are actually authenticating to.
+            // self.getClientTokenAndRegisterClient(appToken: "9911a2c4-cd31-498f-bfb7-c935629ce428")
+            
+            // In the example app we can get this by logging in to the service at
+            // https://playground.megical.com/easyaccess/
+            // and touching the test app client registration token code.
+            guard let exampleUrl = URL(string: "https://playground.megical.com/easyaccess/") else {
+                return
+            }
+//            com.megical.easyaccess.example:/register?clientToken=d5b044c6-ed6e-4f7e-9fe5-d8d2daf9137c
+            UIApplication.shared.open(exampleUrl) { (handled: Bool) in }
         }), for: .touchUpInside)
         
         self.bAuth.setTitle("Authenticate", for: .normal)
@@ -57,8 +72,7 @@ class ViewController: UIViewController {
      one time example app token (valid 3 days) that looks like this:
      d9e734f7-353d-490d-9f78-42ce3c0f19ff
      */
-    private func getClientTokenAndRegisterClient() {
-        let appToken = "9911a2c4-cd31-498f-bfb7-c935629ce428"
+    private func getClientTokenAndRegisterClient(appToken: String) {
         PlaygroundAPI.playgroundClientToken(appToken: appToken) { [weak self] (playgroundRetval: PlaygroundClientTokenReturnValue?, error: Error?) in
             guard let self = self else {
                 return
@@ -171,6 +185,24 @@ class ViewController: UIViewController {
             }
             
             print("Verify complete")
+        }
+    }
+    
+    @objc private func onExampleRegisterAppTokenReceived(notification: Notification) {
+        DispatchQueue.main.async {
+            guard let appToken = notification.object as? String else {
+                return
+            }
+            
+            // Network might not be usable straight after switching apps
+            Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { [weak self] (timer: Timer) in
+                guard let self = self else {
+                    return
+                }
+                DispatchQueue.main.async {
+                    self.getClientTokenAndRegisterClient(appToken: appToken)
+                }
+            }
         }
     }
     
