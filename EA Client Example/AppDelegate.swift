@@ -7,6 +7,7 @@
 
 import UIKit
 import MegicalEasyAccess_SDK_iOS
+import SwiftyBeaver
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -17,6 +18,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         
         EALog.config() // default logging conf, you can do this yourself also
+        // like so:
+//        let log = SwiftyBeaver.self
+//        let console = ConsoleDestination()
+//        console.minLevel = .debug
+//        log.addDestination(console)
         
         let eaOauthRedirectRegistered = URLProtocol.registerClass(ExampleEARedirectURLProtocol.self)
         print("eaOauthRedirectRegistered: \(eaOauthRedirectRegistered)")

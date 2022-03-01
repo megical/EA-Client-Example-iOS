@@ -156,8 +156,6 @@ class ViewController: UIViewController {
                 }
                 return
             }
-            
-            
         }
     }
     
