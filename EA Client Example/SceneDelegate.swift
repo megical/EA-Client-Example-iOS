@@ -77,8 +77,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if url.absoluteString.contains(AUTH_CALLBACK_REGISTER) {
             return handleAuthRegisterCallback(url: url)
         } else if url.absoluteString.contains(AUTH_CALLBACK_EA) {
-            return handleEaCallback(url: url)
+            return handleEaCallbackAuth(url: url)
+        } else if url.absoluteString.contains(SIGN_CALLBACK_EA) {
+            return handleEaCallbackSign(url: url)
         }
+        
         return false
     }
     
@@ -101,7 +104,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         return false
     }
     
-    func handleEaCallback(url: URL) -> Bool {
+    func handleEaCallbackAuth(url: URL) -> Bool {
         SwiftyBeaver.info("Handling Easy Access callback at:\(AUTH_CALLBACK_EA) path called")
         
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
@@ -111,8 +114,27 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let loginCode = components.queryItems?.first(where: { $0.name == "loginCode" })?.value {
             if loginCode.count > 0 {
                 SwiftyBeaver.debug("collected loginCode: \(loginCode) from url")
-                NotificationCenter.default.post(name: .init(rawValue: NOTIFICATION_NAME_EASY_ACCESS_SUCCESS),
+                NotificationCenter.default.post(name: .init(rawValue: NOTIFICATION_NAME_EASY_ACCESS_AUTH_SUCCESS),
                                                 object: loginCode)
+                return true
+            }
+        }
+        
+        return false
+    }
+    
+    func handleEaCallbackSign(url: URL) -> Bool {
+        SwiftyBeaver.info("Handling Easy Access callback at:\(SIGN_CALLBACK_EA) path called")
+        
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
+            return false
+        }
+        
+        if let signatureCode = components.queryItems?.first(where: { $0.name == "signatureCode" })?.value {
+            if signatureCode.count > 0 {
+                SwiftyBeaver.debug("collected signatureCode: \(signatureCode) from url")
+                NotificationCenter.default.post(name: .init(rawValue: NOTIFICATION_NAME_EASY_ACCESS_SIGN_SUCCESS),
+                                                object: signatureCode)
                 return true
             }
         }

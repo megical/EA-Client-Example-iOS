@@ -14,7 +14,9 @@ class ViewController: UIViewController {
     
     private let bRegister = UIButton(type: .roundedRect)
     private let bAuth = UIButton(type: .roundedRect)
+    private let bSign = UIButton(type: .roundedRect)
     private var authFlow: MegAuthFlow?
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,12 +28,17 @@ class ViewController: UIViewController {
         
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(self.onEasyaccessSuccessWithLoginCode(notification:)),
-                                               name: .init(rawValue: NOTIFICATION_NAME_EASY_ACCESS_SUCCESS),
+                                               name: .init(rawValue: NOTIFICATION_NAME_EASY_ACCESS_AUTH_SUCCESS),
                                                object: nil)
         
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(self.onEasyAccessAuthCodeReceived(notification:)),
                                                name: .init(rawValue: NOTIFICATION_NAME_AUTH_CODE_RECEIVED),
+                                               object: nil)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(self.onEasyaccessSuccessWithSignatureCode(notification:)),
+                                               name: .init(rawValue: NOTIFICATION_NAME_EASY_ACCESS_SIGN_SUCCESS),
                                                object: nil)
         
         self.bRegister.setTitle("Register Client", for: .normal)
@@ -61,6 +68,27 @@ class ViewController: UIViewController {
         self.bAuth.addAction(UIAction(handler: { (action: UIAction) in
             self.authenticate()
         }), for: .touchUpInside)
+        
+        self.bSign.setTitle("Sign", for: .normal)
+        self.view.addSubview(self.bSign)
+        self.bSign.translatesAutoresizingMaskIntoConstraints = false
+        self.bSign.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -40.0).isActive = true
+        self.bSign.leftAnchor.constraint(equalTo: bAuth.rightAnchor, constant: 40.0).isActive = true
+        self.bSign.addAction(UIAction(handler: { (action: UIAction) in
+            self.sign(dataToSign: "dataToSign")
+        }), for: .touchUpInside)
+        
+    }
+    
+    func showMessage(title: String, message: String, completion: (() -> Void)?) {
+        DispatchQueue.main.async {
+            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "Ok", style: .default) { (alertAction: UIAlertAction) in
+                completion?()
+            }
+            alert.addAction(okAction)
+            self.present(alert, animated: true)
+        }
     }
     
     /**
@@ -124,6 +152,7 @@ class ViewController: UIViewController {
             }
             
             self.log.info("Client registered with id: \(clientId)")
+            self.showMessage(title: "Ok", message: "Client registered with id: \(clientId)", completion: nil)
         }
     }
     
@@ -144,10 +173,14 @@ class ViewController: UIViewController {
                            authCallbackOauth: AUTH_CALLBACK_OAUTH,
                            audience: audience,
                            keychainKeyClientId: KEYCHAIN_CLIENT_ID,
-                           alwaysShowQRViewOnController: nil) { (error: Error?) in
+                           alwaysShowQRViewOnController: nil) { [weak self] (error: Error?) in
+            
+            guard let self = self else {
+                return
+            }
             
             guard error == nil else {
-                print(error!)
+                self.log.warning(error!.localizedDescription)
                 
                 if let nsError: NSError = error as NSError? {
                     if nsError.code == MegAuthFlow.ERROR_CODE_EASY_ACCESS_APP_LAUNCH_FAILED {
@@ -155,6 +188,61 @@ class ViewController: UIViewController {
                     }
                 }
                 return
+            }
+            
+            self.log.info("Started auth on Easy Access successfully")
+        }
+    }
+    
+    private func sign(dataToSign: String) {
+        
+        guard let authEnv = UserDefaults.standard.string(forKey: "eaAuthEnv") else {
+            self.log.warning("Registration parameters not found")
+            return
+        }
+    
+        MegSignFlow.initiateSign(signatureEndpoint: "https://playground.megical.com/easyaccess/api/v1/sign/signature",
+                                 dataToSign: dataToSign) { [weak self] (signatureCode: String?, error: Error?) in
+            guard let self = self else {
+                return
+            }
+            
+            guard error == nil else {
+                self.log.warning(error!.localizedDescription)
+                
+                if let nsError: NSError = error as NSError? {
+                    if nsError.code == MegAuthFlow.ERROR_CODE_EASY_ACCESS_APP_LAUNCH_FAILED {
+                        print("Easy Access not installed?")
+                    }
+                }
+                return
+            }
+            
+            guard let signatureCode = signatureCode else {
+                self.log.warning("Did not get signatureCode")
+                return
+            }
+            
+            MegSignFlow.sign(authEnv: authEnv,
+                             signatureCallbackEA: SIGN_CALLBACK_EA,
+                             signatureCode: signatureCode) { [weak self] (error: Error?) in
+                
+                guard let self = self else {
+                    return
+                }
+                
+                guard error == nil else {
+                    self.log.warning(error!.localizedDescription)
+                    
+                    if let nsError: NSError = error as NSError? {
+                        if nsError.code == MegAuthFlow.ERROR_CODE_EASY_ACCESS_APP_LAUNCH_FAILED {
+                            print("Easy Access not installed?")
+                        }
+                    }
+                    return
+                }
+                
+                self.log.info("Started signing on Easy Access successfully")
             }
         }
     }
@@ -267,6 +355,28 @@ class ViewController: UIViewController {
                     }
                     
                     self.log.info("playgroundHello ok")
+                    self.showMessage(title: "Ok", message: "Received access token and used it to connect to client backend", completion: nil)
+                }
+                
+            }
+        }
+    }
+    
+    @objc private func onEasyaccessSuccessWithSignatureCode(notification: Notification) {
+        // Signature can be found in the client backend
+        DispatchQueue.main.async {
+            guard let signatureCode = notification.object as? String else {
+                return
+            }
+            
+            // Network might not be usable straight after switching apps
+            Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { [weak self] (timer: Timer) in
+                guard let self = self else {
+                    return
+                }
+                DispatchQueue.main.async {
+                    self.log.info("onEasyaccessSuccessWithSignatureCode success for signatureCode: \(signatureCode)")
+                    self.showMessage(title: "Ok", message: "Signed successfully", completion: nil)
                 }
                 
             }
