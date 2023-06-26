@@ -51,9 +51,9 @@ class ViewController: UIViewController {
             // self.getClientTokenAndRegisterClient(appToken: "9911a2c4-cd31-498f-bfb7-c935629ce428")
             
             // In the example app we can get this by logging in to the service at
-            // https://playground.megical.com/easyaccess/
+            // https://playground.hightrust.id/demo/
             // and touching the test app client registration token code.
-            guard let exampleUrl = URL(string: "https://playground.megical.com/easyaccess/") else {
+            guard let exampleUrl = URL(string: "https://playground.hightrust.id/demo/") else {
                 return
             }
 //            com.megical.easyaccess.example:/register?clientToken=d5b044c6-ed6e-4f7e-9fe5-d8d2daf9137c
@@ -94,9 +94,9 @@ class ViewController: UIViewController {
     /**
      Get clientToken from the service we are authenticating against.
      In the example we are getting clientToken with appToken we get
-     by logging in to playground with easy access.
+     by logging in to playground with hightrust.id.
 
-     Login to https://playground.megical.com/easyaccess/ to get
+     Login to https://playground.hightrust.id/demo/ to get
      one time example app token (valid 3 days) that looks like this:
      d9e734f7-353d-490d-9f78-42ce3c0f19ff
      */
@@ -184,13 +184,13 @@ class ViewController: UIViewController {
                 
                 if let nsError: NSError = error as NSError? {
                     if nsError.code == MegAuthFlow.ERROR_CODE_EASY_ACCESS_APP_LAUNCH_FAILED {
-                        print("Easy Access not installed?")
+                        print("hightrust.id not installed?")
                     }
                 }
                 return
             }
             
-            self.log.info("Started auth on Easy Access successfully")
+            self.log.info("Successfully started auth with hightrust.id")
         }
     }
     
@@ -200,8 +200,8 @@ class ViewController: UIViewController {
             self.log.warning("Registration parameters not found")
             return
         }
-    
-        MegSignFlow.initiateSign(signatureEndpoint: "https://playground.megical.com/easyaccess/api/v1/sign/signature",
+            
+        MegSignFlow.initiateSign(signatureEndpoint: "https://playground.hightrust.id/demo/api/v1/sign/signature",
                                  dataToSign: dataToSign) { [weak self] (signatureCode: String?, error: Error?) in
             guard let self = self else {
                 return
@@ -212,7 +212,7 @@ class ViewController: UIViewController {
                 
                 if let nsError: NSError = error as NSError? {
                     if nsError.code == MegAuthFlow.ERROR_CODE_EASY_ACCESS_APP_LAUNCH_FAILED {
-                        print("Easy Access not installed?")
+                        print("hightrust.id not installed?")
                     }
                 }
                 return
@@ -236,13 +236,13 @@ class ViewController: UIViewController {
                     
                     if let nsError: NSError = error as NSError? {
                         if nsError.code == MegAuthFlow.ERROR_CODE_EASY_ACCESS_APP_LAUNCH_FAILED {
-                            print("Easy Access not installed?")
+                            print("hightrust.id not installed?")
                         }
                     }
                     return
                 }
                 
-                self.log.info("Started signing on Easy Access successfully")
+                self.log.info("Successfully started signing with hightrust.id")
             }
         }
     }

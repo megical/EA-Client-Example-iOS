@@ -43,7 +43,7 @@ public struct PlaygroundAPI {
             return
         }
         
-        guard let url = URL(string: "https://playground.megical.com/test-service/api/v1/public/openIdClientData") else {
+        guard let url = URL(string: "https://playground.hightrust.id/test-service/api/v1/public/openIdClientData") else {
             return
         }
         
@@ -151,7 +151,7 @@ public struct PlaygroundAPI {
     
     public static func playgroundHello(accessToken: String, completion: @escaping (_ error: Error?) -> Void) {
         
-        guard let url = URL(string: "https://playground.megical.com/test-service/api/v1/private/hello") else {
+        guard let url = URL(string: "https://playground.hightrust.id/test-service/api/v1/private/hello") else {
             return
         }
         
